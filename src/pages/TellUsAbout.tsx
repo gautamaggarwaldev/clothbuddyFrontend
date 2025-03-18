@@ -6,6 +6,7 @@ import axios from "axios";
 import menClothing from "../product category data/Men";
 import womenClothing from "../product category data/Women";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const TellUsAbout: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -94,7 +95,7 @@ const TellUsAbout: React.FC = () => {
           ClothBuddy
         </div>
         <div className="flex flex-col items-center">
-          <img
+          <Image
             className="w-8 h-8 md:w-12 md:h-12 rounded-full"
             src="/avatar.png"
             alt="User Avatar"
@@ -106,7 +107,7 @@ const TellUsAbout: React.FC = () => {
       </header>
 
       <div className="relative w-full">
-        <img
+        <Image
           src="/navImage.png"
           className="w-full object-cover h-30 md:h-48 lg:h-60"
           alt="Hero"

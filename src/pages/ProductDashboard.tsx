@@ -48,6 +48,7 @@ export interface ProductDataType {
 // Import your product data here
 // You would have this in a separate file or use API fetching
 import productData from "../Product Data/ProductData";
+import Image from "next/image";
 
 const ProductDashboard: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("shirts");
@@ -232,7 +233,7 @@ const ProductDashboard: React.FC = () => {
               >
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center shadow-sm">
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.name}
                       className="w-10 h-10 object-cover"

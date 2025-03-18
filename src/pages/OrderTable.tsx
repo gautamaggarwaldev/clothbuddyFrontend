@@ -6,8 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import ordersData from "../orderData/orderData.json";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-// import Image from "next/image";
-import watermark from "../../public/wm.png"
+import watermark from "../../public/wm.png";
 import {
   Table,
   TableBody,
@@ -49,14 +48,12 @@ const statusOptions = ["Completed", "Processing", "Incomplete", "Pending"];
 
 const OrderTable = () => {
   const [orders, setOrders] = useState(ordersData);
-  const [originalOrders, setOriginalOrders] = useState(ordersData); // Keep original data for filtering
+  const [originalOrders, setOriginalOrders] = useState(ordersData);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isPriceDropdownOpen, setIsPriceDropdownOpen] = useState(false);
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string>("");
-  const [orderStatuses, setOrderStatuses] = useState<Record<string, string>>(
-    {}
-  );
+  const [orderStatuses, setOrderStatuses] = useState<Record<string, string>>({});
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -75,31 +72,18 @@ const OrderTable = () => {
     setOrderStatuses(initialStatuses);
   }, [orders]);
 
-  // Function to parse date strings in the format "Feb 11, 10:25 am"
-  // Completely rewritten date parsing function
+  // Function to parse date strings
   const parseOrderDate = (dateString: string) => {
     try {
-      // Example format: "Feb 11, 10:25 am"
       const parts = dateString.match(/(\w+)\s+(\d+),\s+(\d+):(\d+)\s+(\w+)/);
-
       if (!parts) {
         console.error("Date string doesn't match expected format:", dateString);
         return null;
       }
 
       const monthNames = {
-        Jan: 0,
-        Feb: 1,
-        Mar: 2,
-        Apr: 3,
-        May: 4,
-        Jun: 5,
-        Jul: 6,
-        Aug: 7,
-        Sep: 8,
-        Oct: 9,
-        Nov: 10,
-        Dec: 11,
+        Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+        Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
       };
 
       const month = monthNames[parts[1]];
@@ -108,34 +92,26 @@ const OrderTable = () => {
       const minute = parseInt(parts[4]);
       const ampm = parts[5].toLowerCase();
 
-      // Validate month
       if (month === undefined) {
         console.error("Invalid month in date string:", dateString);
         return null;
       }
 
-      // Validate day
       if (day < 1 || day > 31) {
         console.error("Invalid day in date string:", dateString);
         return null;
       }
 
-      // Handle AM/PM
       if (ampm === "pm" && hour < 12) hour += 12;
       if (ampm === "am" && hour === 12) hour = 0;
 
-      // Use current year
       const currentYear = new Date().getFullYear();
-
-      // Create the date object
       const date = new Date(currentYear, month, day, hour, minute);
 
-      // If the date is in the future, assume it's from the previous year
       if (date > new Date()) {
         date.setFullYear(currentYear - 1);
       }
 
-      // Check if the date is valid
       if (date.getMonth() !== month || date.getDate() !== day) {
         console.error("Invalid date in date string:", dateString);
         return null;
@@ -150,7 +126,6 @@ const OrderTable = () => {
 
   // Completely rewritten filter function
   const filterByDateRange = (months: number) => {
-    // Validate months input
     if (months < 1 || months > 120) {
       console.error("Invalid months value:", months);
       toast("Invalid Filter", {
@@ -160,12 +135,10 @@ const OrderTable = () => {
       return;
     }
 
-    // Calculate date range
     const today = new Date();
     const startDate = new Date();
     startDate.setMonth(today.getMonth() - months);
 
-    // Set times to beginning/end of day for accurate comparison
     startDate.setHours(0, 0, 0, 0);
     today.setHours(23, 59, 59, 999);
 
@@ -174,13 +147,11 @@ const OrderTable = () => {
       to: today.toISOString(),
     });
 
-    // Filter orders
     const filteredOrders = [];
 
     for (const order of originalOrders) {
       const orderDate = parseOrderDate(order.date);
 
-      // Skip invalid dates
       if (!orderDate) {
         console.warn(
           `Skipping order ${order.id} due to invalid date format: ${order.date}`
@@ -188,12 +159,10 @@ const OrderTable = () => {
         continue;
       }
 
-      // Debug log for individual orders
       console.log(
         `Order ${order.id} date: ${order.date} → ${orderDate.toISOString()}`
       );
 
-      // Check if date is in range
       if (orderDate >= startDate && orderDate <= today) {
         filteredOrders.push(order);
         console.log(`✓ Order ${order.id} is within range`);
@@ -202,7 +171,6 @@ const OrderTable = () => {
       }
     }
 
-    // Apply filter
     console.log(
       `Filtered ${originalOrders.length} → ${filteredOrders.length} orders`
     );
@@ -262,16 +230,13 @@ const OrderTable = () => {
       tableRows.push(rowData);
     });
 
-    // Pre-load the watermark image before starting to generate the PDF
     if (watermark) {
       const img = new Image();
       img.src = watermark.src;
       img.onload = function () {
-        // Once the image is loaded, proceed with PDF generation
         generatePDF(img);
       };
     } else {
-      // If no watermark, proceed directly
       generatePDF(null);
     }
 
@@ -320,7 +285,6 @@ const OrderTable = () => {
           }
         },
         didDrawPage: function (data) {
-          // This function runs for each page
           if (watermarkImg) {
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
@@ -332,7 +296,6 @@ const OrderTable = () => {
 
             console.log(`Adding watermark to page ${doc.getNumberOfPages()}`);
 
-            // Create the lightened version of the image
             const canvas = document.createElement("canvas");
             canvas.width = imgWidth;
             canvas.height = imgHeight;
@@ -343,7 +306,6 @@ const OrderTable = () => {
               ctx.drawImage(watermarkImg, 0, 0, imgWidth, imgHeight);
               const lightenedImg = canvas.toDataURL("image/png");
 
-              // Add the watermark to the current page
               doc.addImage(
                 lightenedImg,
                 "PNG",
@@ -351,7 +313,7 @@ const OrderTable = () => {
                 yPos,
                 imgWidth,
                 imgHeight,
-                `watermark_${doc.getNumberOfPages()}`, // Unique identifier for each page
+                `watermark_${doc.getNumberOfPages()}`,
                 "FAST"
               );
             }
@@ -359,7 +321,6 @@ const OrderTable = () => {
         },
       });
 
-      // Save the PDF after all pages have been generated
       doc.save("store_orders.pdf");
     }
   };
@@ -388,16 +349,13 @@ const OrderTable = () => {
   const sortByDate = () => {
     setOrders(
       [...orders].sort((a, b) => {
-        // Parse dates for both orders
         const dateA = parseOrderDate(a.date);
         const dateB = parseOrderDate(b.date);
 
-        // Handle cases where parsing fails (null values)
-        if (!dateA && !dateB) return 0; // Both dates are invalid, treat as equal
-        if (!dateA) return 1; // Move invalid dateA to the end
-        if (!dateB) return -1; // Move invalid dateB to the end
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1;
+        if (!dateB) return -1;
 
-        // Compare valid dates
         return dateA.getTime() - dateB.getTime();
       })
     );
@@ -481,34 +439,25 @@ const OrderTable = () => {
 
   // Custom dialog component
   const CustomDialog = () => {
-    // Store scroll position in a ref
     const scrollPositionRef = useRef(0);
 
     if (!isCustomizeOpen) return null;
 
-    // Function to save scroll position before status update
     const saveScrollPosition = () => {
       if (scrollContainerRef.current) {
         scrollPositionRef.current = scrollContainerRef.current.scrollTop;
       }
     };
 
-    // Function to restore scroll position after state update
     const restoreScrollPosition = () => {
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = scrollPositionRef.current;
       }
     };
 
-    // Modified status change handler
     const handleStatusChangeWithScroll = (orderId, status, e) => {
-      // Save current scroll position before state change
       saveScrollPosition();
-
-      // Call original handler
       handleStatusChange(orderId, status, e);
-
-      // Restore scroll position after React updates the component
       setTimeout(restoreScrollPosition, 0);
     };
 
