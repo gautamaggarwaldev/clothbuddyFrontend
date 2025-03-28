@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useEffect, useRef } from "react";
@@ -86,7 +87,7 @@ const OrderTable = () => {
         Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
       };
 
-      const month = monthNames[parts[1]];
+      const month = monthNames[parts[1] as keyof typeof monthNames];
       const day = parseInt(parts[2]);
       let hour = parseInt(parts[3]);
       const minute = parseInt(parts[4]);
@@ -455,7 +456,7 @@ const OrderTable = () => {
       }
     };
 
-    const handleStatusChangeWithScroll = (orderId, status, e) => {
+    const handleStatusChangeWithScroll = (orderId: any, status: any, e: any) => {
       saveScrollPosition();
       handleStatusChange(orderId, status, e);
       setTimeout(restoreScrollPosition, 0);

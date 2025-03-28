@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -16,7 +17,7 @@ import {
 
 // Define types for our data structure
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   image: string;
   sales: number;
@@ -111,8 +112,8 @@ const ProductDashboard: React.FC = () => {
     index: number;
   }
 
-  const renderCustomBar = (props: CustomBarProps) => {
-    const { x, y, width, height, index } = props;
+  const renderCustomBar = (props: any) => {
+    const { x, y, width, height, index } = props as CustomBarProps;
     const isMax = categoryData.monthlyData[index].units === peakMonth.units;
 
     return (
@@ -237,6 +238,8 @@ const ProductDashboard: React.FC = () => {
                       src={product.image}
                       alt={product.name}
                       className="w-10 h-10 object-cover"
+                      width={40}
+                      height={40}
                     />
                   </div>
                   <div className="ml-4">

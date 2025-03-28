@@ -1,10 +1,12 @@
 
-import TellUsAbout from "@/pages/TellUsAbout";
+import OrderTable from "@/pages/OrderTable";
+// import ProductDashboard from "@/pages/ProductDashboard";
 
 export default function Home() {
   return (
-    // <OrderTable />
+    <OrderTable />
     // <ProductDashboard />
-    <TellUsAbout />
+    // <TellUsAbout />
+    // <OrderTable />
   );
 }
